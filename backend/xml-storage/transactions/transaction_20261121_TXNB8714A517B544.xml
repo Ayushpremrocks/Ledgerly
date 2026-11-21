@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<transaction>
+    <transactionId>TXNB8714A517B544</transactionId>
+    <transactionType>DEPOSIT</transactionType>
+    <amount>2000.00</amount>
+    <toAccountNumber>ACC5908855226450</toAccountNumber>
+    <description>Salary top-up</description>
+    <status>COMPLETED</status>
+    <transactionDate>2026-11-21 03:13:51</transactionDate>
+</transaction>

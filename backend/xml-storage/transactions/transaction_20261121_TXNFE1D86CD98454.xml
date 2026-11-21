@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<transaction>
+    <transactionId>TXNFE1D86CD98454</transactionId>
+    <transactionType>DEPOSIT</transactionType>
+    <amount>100000.00</amount>
+    <toAccountNumber>ACC0916672039132</toAccountNumber>
+    <description>Cash deposit</description>
+    <status>COMPLETED</status>
+    <transactionDate>2026-11-21 03:14:01</transactionDate>
+</transaction>

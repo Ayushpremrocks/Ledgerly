@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<transaction>
+    <transactionId>TXNB637617D124C4</transactionId>
+    <transactionType>DEPOSIT</transactionType>
+    <amount>1000.00</amount>
+    <toAccountNumber>ACC3655116019262</toAccountNumber>
+    <description>Opening deposit</description>
+    <status>COMPLETED</status>
+    <transactionDate>2026-11-21 03:12:30</transactionDate>
+</transaction>

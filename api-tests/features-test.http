@@ -1,0 +1,134 @@
+### Ledgerly: newer features (deposit/withdraw, payees, insights, notifications, profile, admin)
+### Open in VS Code with the REST Client extension and click "Send Request" above each block.
+### Run the login request first; later requests reuse its token.
+
+@baseUrl = http://localhost:8080/api
+
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "Test@1234"
+}
+
+###
+@token = {{login.response.body.token}}
+
+### Open an account with an opening deposit (recorded as a DEPOSIT transaction)
+# @name acc
+POST {{baseUrl}}/accounts
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "accountType": "SAVINGS",
+  "nickname": "Everyday",
+  "openingDeposit": 25000
+}
+
+###
+@acc = {{acc.response.body.accountNumber}}
+
+### Deposit
+POST {{baseUrl}}/transactions/deposit
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "accountNumber": "{{acc}}", "amount": 5000, "category": "SALARY", "description": "Salary" }
+
+### Withdraw
+POST {{baseUrl}}/transactions/withdraw
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "accountNumber": "{{acc}}", "amount": 1000 }
+
+### Look up who owns an account number before paying (name is partly hidden)
+GET {{baseUrl}}/accounts/lookup/{{acc}}
+Authorization: Bearer {{token}}
+
+### Account history with running balance
+GET {{baseUrl}}/transactions/account/{{acc}}
+Authorization: Bearer {{token}}
+
+### Search / filter all my transactions (every parameter is optional)
+GET {{baseUrl}}/transactions/my?direction=DEBIT&category=FOOD&from=2026-01-01&q=dinner
+Authorization: Bearer {{token}}
+
+### CSV statement
+GET {{baseUrl}}/transactions/account/{{acc}}/statement?from=2026-01-01
+Authorization: Bearer {{token}}
+
+### Saved payees
+GET {{baseUrl}}/beneficiaries
+Authorization: Bearer {{token}}
+
+### Add a payee (use someone else's account number)
+POST {{baseUrl}}/beneficiaries
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "accountNumber": "ACC0000000000000", "nickname": "Landlord" }
+
+### Insights (monthly in/out, spending by category, top payees)
+GET {{baseUrl}}/insights
+Authorization: Bearer {{token}}
+
+### Notifications
+GET {{baseUrl}}/notifications
+Authorization: Bearer {{token}}
+
+### Mark all notifications read
+POST {{baseUrl}}/notifications/read-all
+Authorization: Bearer {{token}}
+
+### My profile
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{token}}
+
+### Change password
+PUT {{baseUrl}}/users/me/password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "currentPassword": "Test@1234", "newPassword": "New@12345" }
+
+### Close an account (balance must be 0)
+POST {{baseUrl}}/accounts/{{acc}}/close
+Authorization: Bearer {{token}}
+
+### ======================= ADMIN =======================
+### Start the backend with ADMIN_PASSWORD set to create the admin user.
+
+# @name admin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{ "username": "admin", "password": "Admin@12345" }
+
+###
+@adminToken = {{admin.response.body.token}}
+
+### Bank-wide stats
+GET {{baseUrl}}/admin/stats
+Authorization: Bearer {{adminToken}}
+
+### All customers
+GET {{baseUrl}}/admin/users
+Authorization: Bearer {{adminToken}}
+
+### Freeze an account
+PATCH {{baseUrl}}/admin/accounts/{{acc}}/freeze
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{ "frozen": true }
+
+### Deactivate a customer (use an id from /admin/users)
+PATCH {{baseUrl}}/admin/users/2/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{ "active": false }

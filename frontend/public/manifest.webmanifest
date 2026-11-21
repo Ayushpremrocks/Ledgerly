@@ -1,0 +1,14 @@
+{
+  "name": "Ledgerly",
+  "short_name": "Ledgerly",
+  "description": "Simple, calm personal banking.",
+  "start_url": "/overview",
+  "display": "browser",
+  "background_color": "#fafaf9",
+  "theme_color": "#15803d",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/ledgerly.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

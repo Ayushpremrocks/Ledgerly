@@ -1,0 +1,115 @@
+### Variables
+@baseUrl = http://localhost:8080/api
+@contentType = application/json
+
+### ========================================
+### TEST 1: REGISTER NEW USER
+### ========================================
+
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "email": "testuser@example.com",
+  "password": "Test@1234",
+  "fullName": "Test User",
+  "phoneNumber": "9876543210"
+}
+
+### ========================================
+### TEST 2: REGISTER ANOTHER USER (for testing)
+### ========================================
+
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "johndoe",
+  "email": "johndoe@example.com",
+  "password": "Strong@Pass123",
+  "fullName": "John Doe",
+  "phoneNumber": "9123456789"
+}
+
+### ========================================
+### TEST 3: LOGIN WITH VALID CREDENTIALS
+### ========================================
+
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "password": "Test@1234"
+}
+
+### ========================================
+### TEST 4: LOGIN WITH INVALID PASSWORD
+### ========================================
+
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "password": "WrongPassword"
+}
+
+### ========================================
+### TEST 5: LOGIN WITH NON-EXISTENT USER
+### ========================================
+
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "nonexistentuser",
+  "password": "Test@1234"
+}
+
+### ========================================
+### TEST 6: REGISTER WITH DUPLICATE USERNAME
+### ========================================
+
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "email": "newemail@example.com",
+  "password": "Test@1234",
+  "fullName": "Another Test User",
+  "phoneNumber": "9876543211"
+}
+
+### ========================================
+### TEST 7: REGISTER WITH WEAK PASSWORD
+### ========================================
+
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "weakuser",
+  "email": "weakuser@example.com",
+  "password": "weak",
+  "fullName": "Weak Password User",
+  "phoneNumber": "9876543212"
+}
+
+### ========================================
+### TEST 8: REGISTER WITH INVALID EMAIL
+### ========================================
+
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "invalidemail",
+  "email": "notanemail",
+  "password": "Test@1234",
+  "fullName": "Invalid Email User",
+  "phoneNumber": "9876543213"
+}

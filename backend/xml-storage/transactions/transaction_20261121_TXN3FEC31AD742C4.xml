@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<transaction>
+    <transactionId>TXN3FEC31AD742C4</transactionId>
+    <transactionType>WITHDRAWAL</transactionType>
+    <amount>1000.00</amount>
+    <fromAccountNumber>ACC1256002356757</fromAccountNumber>
+    <description>Cash withdrawal</description>
+    <status>COMPLETED</status>
+    <transactionDate>2026-11-21 12:47:30</transactionDate>
+    <userId>3</userId>
+    <username>ayushpremrocks</username>
+</transaction>

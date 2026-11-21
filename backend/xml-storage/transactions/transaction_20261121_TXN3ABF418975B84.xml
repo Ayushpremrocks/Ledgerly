@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<transaction>
+    <transactionId>TXN3ABF418975B84</transactionId>
+    <transactionType>TRANSFER</transactionType>
+    <amount>1800.00</amount>
+    <fromAccountNumber>ACC5271393179047</fromAccountNumber>
+    <toAccountNumber>ACC4542400098459</toAccountNumber>
+    <description>Dinner split</description>
+    <status>COMPLETED</status>
+    <transactionDate>2026-11-21 03:27:45</transactionDate>
+    <userId>11</userId>
+    <username>priya854699</username>
+</transaction>

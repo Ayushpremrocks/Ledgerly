@@ -1,0 +1,23 @@
+# Render Build Configuration for the Ledgerly backend
+# https://render.com/docs/yaml-spec
+
+services:
+  - type: web
+    name: ledgerly-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      # Paste the Neon connection string as-is (postgresql://user:pass@host/db?sslmode=require).
+      # NeonDatabaseUrlProcessor turns it into JDBC settings, so no separate username/password is needed.
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      # Your frontend's URL, e.g. https://ledgerly.vercel.app (comma-separate several)
+      - key: CORS_ORIGINS
+        sync: false
+      # Set to create the first admin user on startup (username "admin" unless ADMIN_USERNAME is set)
+      - key: ADMIN_PASSWORD
+        sync: false
+    healthCheckPath: /api/auth/health
+    autoDeploy: true

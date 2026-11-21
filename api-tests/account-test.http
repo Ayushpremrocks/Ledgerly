@@ -1,0 +1,145 @@
+### Variables
+@baseUrl = http://localhost:8080/api
+@contentType = application/json
+
+### ========================================
+### STEP 1: LOGIN TO GET JWT TOKEN
+### ========================================
+
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "password": "Test@1234"
+}
+
+###
+@authToken = {{login.response.body.token}}
+
+### ========================================
+### TEST 1: CREATE SAVINGS ACCOUNT
+### ========================================
+
+POST {{baseUrl}}/accounts/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "accountType": "SAVINGS",
+  "openingDeposit": 5000.00
+}
+
+### ========================================
+### TEST 2: CREATE CURRENT ACCOUNT
+### ========================================
+
+POST {{baseUrl}}/accounts/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "accountType": "CURRENT",
+  "openingDeposit": 10000.00
+}
+
+### ========================================
+### TEST 3: CREATE FIXED DEPOSIT ACCOUNT
+### ========================================
+
+POST {{baseUrl}}/accounts/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "accountType": "FIXED_DEPOSIT",
+  "openingDeposit": 50000.00
+}
+
+### ========================================
+### TEST 4: GET ALL MY ACCOUNTS
+### ========================================
+
+GET {{baseUrl}}/accounts/my-accounts
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### TEST 5: GET SPECIFIC ACCOUNT DETAILS
+### ========================================
+### Replace ACC1234567890123 with actual account number from previous test
+
+GET {{baseUrl}}/accounts/ACC1234567890123
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### TEST 6: GET ACCOUNT BALANCE
+### ========================================
+### Replace ACC1234567890123 with actual account number
+
+GET {{baseUrl}}/accounts/ACC1234567890123/balance
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### TEST 7: GET TOTAL BALANCE (ALL ACCOUNTS)
+### ========================================
+
+GET {{baseUrl}}/accounts/total-balance
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### TEST 8: CREATE ACCOUNT WITHOUT TOKEN (Should Fail)
+### ========================================
+
+POST {{baseUrl}}/accounts/create
+Content-Type: {{contentType}}
+
+{
+  "accountType": "SAVINGS",
+  "openingDeposit": 1000.00
+}
+
+### ========================================
+### TEST 9: CREATE ACCOUNT WITH INVALID TYPE
+### ========================================
+
+POST {{baseUrl}}/accounts/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "accountType": "INVALID_TYPE",
+  "openingDeposit": 1000.00
+}
+
+### ========================================
+### TEST 10: TRY TO ACCESS ANOTHER USER'S ACCOUNT (Should Fail)
+### ========================================
+### First, login as another user
+
+# @name login2
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "johndoe",
+  "password": "Strong@Pass123"
+}
+
+###
+@authToken2 = {{login2.response.body.token}}
+
+### Create account for johndoe
+POST {{baseUrl}}/accounts/create
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken2}}
+
+{
+  "accountType": "SAVINGS",
+  "openingDeposit": 3000.00
+}
+
+### Try to access johndoe's account with testuser's token (should fail)
+### Replace with johndoe's actual account number from above
+GET {{baseUrl}}/accounts/ACC9876543210987
+Authorization: Bearer {{authToken}}

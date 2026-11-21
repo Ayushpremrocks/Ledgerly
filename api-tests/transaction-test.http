@@ -1,0 +1,246 @@
+### Variables
+@baseUrl = http://localhost:8080/api
+@contentType = application/json
+
+### ========================================
+### STEP 1: LOGIN AS TESTUSER
+### ========================================
+
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "password": "Test@1234"
+}
+
+###
+@authToken = {{login.response.body.token}}
+
+### ========================================
+### STEP 2: GET MY ACCOUNTS (To get account numbers)
+### ========================================
+
+GET {{baseUrl}}/accounts/my-accounts
+Authorization: Bearer {{authToken}}
+
+### Note: Copy two account numbers from the response above
+### Replace the values below with your actual account numbers
+
+@fromAccount = ACC2965582615038
+@toAccount = ACC2430937314843
+
+### ========================================
+### TEST 1: SUCCESSFUL FUND TRANSFER
+### ========================================
+
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{fromAccount}}",
+  "toAccountNumber": "{{toAccount}}",
+  "amount": 1000.00,
+  "description": "Payment for services"
+}
+
+### ========================================
+### TEST 2: TRANSFER TO ANOTHER USER (INTER-USER TRANSFER)
+### ========================================
+
+# First, login as johndoe and get his account
+# @name login2
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "username": "johndoe",
+  "password": "Strong@Pass123"
+}
+
+###
+@authToken2 = {{login2.response.body.token}}
+
+### Get johndoe's account
+GET {{baseUrl}}/accounts/my-accounts
+Authorization: Bearer {{authToken2}}
+
+### Note: Copy johndoe's account number
+@johnAccount = ACC1111222233334
+
+### Now transfer from testuser to johndoe
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{fromAccount}}",
+  "toAccountNumber": "{{johnAccount}}",
+  "amount": 500.00,
+  "description": "Transfer to John Doe"
+}
+
+### ========================================
+### TEST 3: INSUFFICIENT BALANCE (Should Fail)
+### ========================================
+
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{fromAccount}}",
+  "toAccountNumber": "{{toAccount}}",
+  "amount": 999999.00,
+  "description": "Large amount transfer"
+}
+
+### ========================================
+### TEST 4: TRANSFER TO SAME ACCOUNT (Should Fail)
+### ========================================
+
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{fromAccount}}",
+  "toAccountNumber": "{{fromAccount}}",
+  "amount": 100.00,
+  "description": "Same account transfer"
+}
+
+### ========================================
+### TEST 5: MINIMUM AMOUNT VALIDATION (Should Fail)
+### ========================================
+
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{fromAccount}}",
+  "toAccountNumber": "{{toAccount}}",
+  "amount": 0.50,
+  "description": "Below minimum amount"
+}
+
+### ========================================
+### TEST 6: MAXIMUM AMOUNT VALIDATION (Should Fail)
+### ========================================
+
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{fromAccount}}",
+  "toAccountNumber": "{{toAccount}}",
+  "amount": 150000.00,
+  "description": "Above maximum amount"
+}
+
+### ========================================
+### TEST 7: INVALID ACCOUNT NUMBER (Should Fail)
+### ========================================
+
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{fromAccount}}",
+  "toAccountNumber": "INVALIDACCOUNT123",
+  "amount": 100.00,
+  "description": "Invalid account"
+}
+
+### ========================================
+### TEST 8: TRANSFER FROM SOMEONE ELSE'S ACCOUNT (Should Fail)
+### ========================================
+
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{johnAccount}}",
+  "toAccountNumber": "{{fromAccount}}",
+  "amount": 100.00,
+  "description": "Unauthorized transfer"
+}
+
+### ========================================
+### TEST 9: VIEW TRANSACTION HISTORY FOR AN ACCOUNT
+### ========================================
+
+GET {{baseUrl}}/transactions/account/{{fromAccount}}
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### TEST 10: VIEW SPECIFIC TRANSACTION BY ID
+### ========================================
+### Replace TXN1234567890ABC with actual transaction ID from TEST 1 response
+
+GET {{baseUrl}}/transactions/TXN1234567890ABC
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### TEST 11: CHECK UPDATED BALANCES
+### ========================================
+
+GET {{baseUrl}}/accounts/{{fromAccount}}/balance
+Authorization: Bearer {{authToken}}
+
+###
+
+GET {{baseUrl}}/accounts/{{toAccount}}/balance
+Authorization: Bearer {{authToken}}
+
+###
+
+GET {{baseUrl}}/accounts/total-balance
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### TEST 12: MULTIPLE TRANSFERS IN SEQUENCE
+### ========================================
+
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{fromAccount}}",
+  "toAccountNumber": "{{toAccount}}",
+  "amount": 250.00,
+  "description": "First transfer"
+}
+
+###
+
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{fromAccount}}",
+  "toAccountNumber": "{{toAccount}}",
+  "amount": 300.00,
+  "description": "Second transfer"
+}
+
+###
+
+POST {{baseUrl}}/transactions/transfer
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "fromAccountNumber": "{{toAccount}}",
+  "toAccountNumber": "{{fromAccount}}",
+  "amount": 100.00,
+  "description": "Reverse transfer"
+}

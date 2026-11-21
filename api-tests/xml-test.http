@@ -1,0 +1,32 @@
+### Variables
+@baseUrl = http://localhost:8080/api
+
+### ========================================
+### STEP 1: LOGIN
+### ========================================
+
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "Test@1234"
+}
+
+###
+@authToken = {{login.response.body.token}}
+
+### ========================================
+### TEST 1: LIST ALL XML FILES
+### ========================================
+
+GET {{baseUrl}}/xml/transactions/list
+Authorization: Bearer {{authToken}}
+
+### ========================================
+### TEST 2: EXPORT ALL TRANSACTIONS TO SINGLE XML
+### ========================================
+
+POST {{baseUrl}}/xml/transactions/export-all
+Authorization: Bearer {{authToken}}
